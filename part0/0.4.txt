@@ -1,0 +1,25 @@
+squenceDiagram
+
+//USER creating a new note.
+
+participant browser
+participant server
+participant user
+
+browser ->> server: GET https://studies.cs.helsinki.fi/exampleap
+activate server 
+server ->> browser: HTML document
+desactive server
+
+user ->> browser: insert new note
+user ->> browser: save new note
+
+browser ->> server: POST https://studies.cs.helsinki.fi/exampleap
+activate server
+server ->> browser: note: this is new prompt 
+desactive server
+
+browser ->> server: GET https://studies.cs.helsinki.fi/exampleap
+activate server 
+server ->> browser: HTML document
+desactive server
