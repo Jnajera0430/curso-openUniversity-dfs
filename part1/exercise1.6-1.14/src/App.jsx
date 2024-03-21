@@ -4,11 +4,39 @@ const Button = ({ handleClick, text }) => (
   <button onClick={handleClick}>{text}</button>
 );
 
-const Content = ({ text, total, caracter }) => (
-  <p>
-    {text} {total} {caracter}
-  </p>
+const StatisticLine = ({ text, total }) => (
+  <>
+    <tr>
+      <td>{text}</td>
+      <td>{total}</td>
+    </tr>
+  </>
 );
+
+const Statistics = ({
+  good,
+  neutral,
+  bad,
+  total,
+  average,
+  percentagePositive,
+}) => {
+  if (good == 0 && neutral == 0 && bad == 0) {
+    return <p>No feedback given</p>;
+  }
+  return (
+    <table>
+      <tbody>
+        <StatisticLine text={"good"} total={good} />
+        <StatisticLine text={"neutral"} total={neutral} />
+        <StatisticLine text={"bad"} total={bad} />
+        <StatisticLine text={"all"} total={total} />
+        <StatisticLine text={"average"} total={average} />
+        <StatisticLine text={"posetive"} total={`${percentagePositive}%`} />
+      </tbody>
+    </table>
+  );
+};
 
 const App = () => {
   const [good, setGood] = useState(0);
@@ -29,12 +57,14 @@ const App = () => {
     setAverage(updateTotalPro / updateTotal);
     setPercentagePositive((updateGood / updateTotal) * 100);
   };
+
   const handleNeutralClick = () => {
     setNeutral(1 + neutral);
     const updateTotal = total + 1;
     setTotal(updateTotal);
     setPercentagePositive((good / updateTotal) * 100);
   };
+
   const handleBadClick = () => {
     const updateTotal = total + 1;
     const updateTotalPro = totalpro - 1;
@@ -44,6 +74,7 @@ const App = () => {
     setAverage(updateTotalPro / updateTotal);
     setPercentagePositive((good / updateTotal) * 100);
   };
+
   return (
     <div>
       <h1>give feedback </h1>
@@ -53,14 +84,14 @@ const App = () => {
         <Button handleClick={handleBadClick} text={"bad"} />
       </div>
       <h1>statistics</h1>
-      <div>
-        <Content text={"good"} total={good} />
-        <Content text={"neutral"} total={neutral} />
-        <Content text={"bad"} total={bad} />
-        <Content text={"all"} total={total} />
-        <Content text={"average"} total={average} />
-        <Content text={"posetive"} total={percentagePositive} caracter={"%"} />
-      </div>
+      <Statistics
+        good={good}
+        neutral={neutral}
+        bad={bad}
+        total={total}
+        average={average}
+        percentagePositive={percentagePositive}
+      />
     </div>
   );
 };
