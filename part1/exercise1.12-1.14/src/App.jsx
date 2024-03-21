@@ -1,4 +1,5 @@
 import { useState } from "react";
+const points = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0 };
 
 const App = () => {
   const anecdotes = [
@@ -13,14 +14,47 @@ const App = () => {
   ];
 
   const [selected, setSelected] = useState(0);
+  const [countVote, setCountVote] = useState({ ...points });
+  const [anecdoteMostVote, setAnecdoteMostVote] = useState(anecdotes[0]);
   const handleAnecdotesclick = () => {
     const random = Math.floor(Math.random() * anecdotes.length);
     setSelected(random);
   };
+  const handleAnecdoteMostVote = (listVotes) => {
+    let mostVotedAnecdote = "";
+    let maxVotes = 0;
+    for (let anecdoteIndex in listVotes) {
+      const votes = listVotes[anecdoteIndex];
+      if (votes > maxVotes) {
+        maxVotes = votes;
+        mostVotedAnecdote = anecdoteIndex;
+      }
+    }
+    console.log({ mostVotedAnecdote, listVotes });
+    console.log(anecdotes[mostVotedAnecdote]);
+    setAnecdoteMostVote(anecdotes[mostVotedAnecdote]);
+  };
+
+  const handleVoteClick = () => {
+    const newVote = countVote[selected] + 1;
+    const updateCountVote = { ...countVote, [selected]: newVote };
+    setCountVote(updateCountVote);
+    handleAnecdoteMostVote(updateCountVote);
+  };
+
   return (
     <div>
-      <p>{anecdotes[selected]}</p>
-      <button onClick={handleAnecdotesclick}>next anecdote</button>
+      <div>
+        <h1>Anecdote od day</h1>
+        <p>{anecdotes[selected]}</p>
+        <p>has {countVote[selected]} votes</p>
+        <button onClick={handleVoteClick}>vote</button>
+        <button onClick={handleAnecdotesclick}>next anecdote</button>
+      </div>
+      <div>
+        <h1>Anecdote with most votes</h1>
+        <p>{anecdoteMostVote}</p>
+      </div>
     </div>
   );
 };
