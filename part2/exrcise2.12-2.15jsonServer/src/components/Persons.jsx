@@ -1,16 +1,21 @@
-const Person = ({ person }) => {
+const Person = ({ person, onHandleDelete }) => {
   return (
-    <p>
+    <div>
       {person.name} {person.number}
-    </p>
+      <button onClick={onHandleDelete}>delete</button>
+    </div>
   );
 };
 
-const Persons = ({ persons = [] }) => {
+const Persons = ({ persons = [], onHandleDelete }) => {
   return (
     <div>
       {persons.map((person) => (
-        <Person person={person} key={person.id} />
+        <Person
+          person={person}
+          key={person.id}
+          onHandleDelete={onHandleDelete(person.id)}
+        />
       ))}
     </div>
   );
