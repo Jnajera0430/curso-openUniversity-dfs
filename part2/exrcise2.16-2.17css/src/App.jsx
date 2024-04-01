@@ -68,7 +68,7 @@ const App = () => {
         .catch(() => {
           setType("error");
           setErrorMessage(
-            `Information of ${personFound.name} has already been removed from server`
+            `Information of ${personFound.name} has already been removed from server.`
           );
           setTimeout(() => {
             setErrorMessage(null);
