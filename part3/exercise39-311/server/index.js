@@ -1,13 +1,17 @@
+//packages
 const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
 const app = express();
 
-app.use(express.json());
-app.use(cors());
+//middlewares
 morgan.token("dev", function getBody(req) {
   return JSON.stringify(req.body);
 });
+app.use(express.static("dist"));
+app.use(express.json());
+app.use(cors());
+app.use(morgan(":method :url :response-time :dev "));
 
 let persons = [
   {
@@ -37,8 +41,7 @@ const generateId = () => {
   return maxId + 1;
 };
 
-app.use(morgan(":method :url :response-time :dev "));
-
+//controllers
 app.get("/", (request, response) => {
   response.send("<h1>Hello world!</h1>");
 });
