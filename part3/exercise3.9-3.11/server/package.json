@@ -1,0 +1,24 @@
+{
+  "name": "exercise1.1-1.6",
+  "version": "1.0.0",
+  "description": "rest solucion de los ejercicios de la part3",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "build:ui": "xcopy /s /e /y dist ..\\front && cd ../front && npm run build && xcopy /s /e /y dist ..\\server",
+    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push"
+  },
+  "author": "jnajera",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "mongoose": "^8.3.0",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
