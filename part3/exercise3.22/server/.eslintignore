@@ -1,0 +1,8 @@
+dist
+.eslintrc.js
+node_modules
+assets
+request
+.env
+index.html
+.vscode
