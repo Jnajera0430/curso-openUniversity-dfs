@@ -1,0 +1,39 @@
+{
+  "name": "example1",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "lint": "eslint .",
+    "test": "jest --verbose",
+    "dev": "nodemon src/index.js",
+    "build:ui": "xcopy /s /e /y dist ..\\front && cd ../front && npm run build && xcopy /s /e /y dist ..\\server",
+    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "mongoose": "^8.3.0"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "3.0.2",
+    "@eslint/js": "^9.0.0",
+    "@stylistic/eslint-plugin-js": "^1.7.0",
+    "eslint": "8.57.0",
+    "eslint-config-standard": "17.1.0",
+    "eslint-plugin-import": "2.29.1",
+    "eslint-plugin-n": "16.6.2",
+    "eslint-plugin-promise": "6.1.1",
+    "globals": "15.0.0",
+    "jest": "^29.7.0",
+    "nodemon": "3.1.0"
+  },
+  "jest": {
+    "testEnvironment": "node"
+  }
+}
