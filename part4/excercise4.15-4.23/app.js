@@ -4,12 +4,11 @@ require("express-async-errors");
 const app = express();
 const cors = require("cors");
 const middleware = require("./utils/middleware");
-const logger = require("./utils/logger");
+const logger = require("./utils/loggers");
 const mongoose = require("mongoose");
-const notesRouter = require("./controllers/notes");
-const userRouter = require("./controllers/users");
-const loginRouter = require("./controllers/login");
+const blogsRouter = require("./controllers/blog");
 
+//connect
 mongoose.set("strictQuery", false);
 
 logger.info("connecting to", config.MONGODB_URI);
@@ -23,18 +22,16 @@ mongoose
     logger.error("error connecting to MongoDB:", error.message);
   });
 
-// middlewares
+//middlewares
 app.use(cors());
 app.use(express.static("dist"));
 app.use(express.json());
 app.use(middleware.requestLogger);
 
-// controllers + routers
-app.use("/api/notes", notesRouter);
-app.use("/api/users", userRouter);
-app.use("/api/login", loginRouter);
+//Router + controllers
+app.use("/api/blogs", blogsRouter);
 
-//middleware handle errors
+//handler errors
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);
 
