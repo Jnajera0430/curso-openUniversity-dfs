@@ -7,6 +7,8 @@ const middleware = require("./utils/middleware");
 const logger = require("./utils/loggers");
 const mongoose = require("mongoose");
 const blogsRouter = require("./controllers/blog");
+const userRouter = require("./controllers/user");
+const loginRouter = require("./controllers/login");
 
 //connect
 mongoose.set("strictQuery", false);
@@ -29,6 +31,11 @@ app.use(express.json());
 app.use(middleware.requestLogger);
 
 //Router + controllers
+//routes public
+app.use("/api/login", loginRouter);
+
+//routes protected
+app.use("/api/users", userRouter);
 app.use("/api/blogs", blogsRouter);
 
 //handler errors

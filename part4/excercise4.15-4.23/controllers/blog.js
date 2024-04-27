@@ -1,50 +1,84 @@
 const blogsRouter = require("express").Router();
+const middleware = require("../utils/middleware");
 const Blog = require("../models/blog");
 
-blogsRouter.get("/", async (request, response) => {
-  const blogs = await Blog.find({});
-  return response.json(blogs);
-});
-
-blogsRouter.post("/", async (request, response) => {
-  const { title, author, url, likes } = request.body;
-  if (!title || !url) {
-    return response.status(400).json({ error: "content missing" });
+blogsRouter.get(
+  "/",
+  [middleware.tokenExtractor, middleware.userExtractor],
+  async (request, response) => {
+    const blogs = await Blog.find({}).populate("user", {
+      username: 1,
+      name: 1,
+    });
+    return response.json(blogs);
   }
-  const blog = new Blog({
-    title,
-    author,
-    url,
-    likes: likes || 0,
-  });
+);
 
-  const savedBlog = await blog.save();
+blogsRouter.post(
+  "/",
+  [middleware.tokenExtractor, middleware.userExtractor],
+  async (request, response) => {
+    const { title, author, url, likes } = request.body;
+    const user = request.user;
+    if (!title || !url) {
+      return response.status(400).json({ error: "content missing" });
+    }
 
-  return response.status(201).json(savedBlog);
-});
+    const blog = new Blog({
+      title,
+      author,
+      url,
+      likes: likes || 0,
+      user: user.id,
+    });
 
-blogsRouter.delete("/:id", async (request, response) => {
-  const id = request.params.id;
-  await Blog.findByIdAndDelete(id);
-  return response.status(204).end();
-});
+    const savedBlog = await blog.save();
+    user.blogs = user.blogs.concat(savedBlog.id);
+    user.save();
+    return response.status(201).json(savedBlog);
+  }
+);
 
-blogsRouter.put("/:id", async (request, response) => {
-  const id = request.params.id;
-  const body = request.body;
+blogsRouter.delete(
+  "/:id",
+  [middleware.tokenExtractor, middleware.userExtractor],
+  async (request, response) => {
+    const id = request.params.id;
+    const user = request.user;
 
-  const blog = {
-    title: body.title,
-    author: body.author,
-    url: body.url,
-    likes: body.likes,
-  };
+    const blogToDelete = await Blog.findById(id);
 
-  const updatedBlog = await Blog.findByIdAndUpdate(id, blog, {
-    new: true,
-  });
+    if (blogToDelete.user.toString() !== user.id) {
+      return response
+        .status(400)
+        .json({ error: "You are not allowed to delete that note." });
+    }
 
-  return response.json(updatedBlog);
-});
+    await Blog.findByIdAndDelete(blogToDelete.id);
+    return response.status(204).end();
+  }
+);
+
+blogsRouter.put(
+  "/:id",
+  [middleware.tokenExtractor, middleware.userExtractor],
+  async (request, response) => {
+    const id = request.params.id;
+    const body = request.body;
+
+    const blog = {
+      title: body.title,
+      author: body.author,
+      url: body.url,
+      likes: body.likes,
+    };
+
+    const updatedBlog = await Blog.findByIdAndUpdate(id, blog, {
+      new: true,
+    });
+
+    return response.json(updatedBlog);
+  }
+);
 
 module.exports = blogsRouter;

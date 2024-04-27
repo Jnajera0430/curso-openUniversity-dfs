@@ -5,29 +5,49 @@ const supertest = require("supertest");
 const app = require("../app");
 const Blog = require("../models/blog");
 const helper = require("./test_helper");
+const User = require("../models/user");
 
 const api = supertest(app);
 
 describe("When there is initially some blogs saved", () => {
+  let token = "";
   beforeEach(async () => {
     await Blog.deleteMany({});
-    await Blog.insertMany(helper.initialBlogs);
+    await User.deleteMany({});
+
+    const { name, password, username } = helper.initialUser[0];
+
+    const responseUser = await api
+      .post("/api/users")
+      .send({ name, username, password });
+    const listBlogs = helper.initialBlogs.map((blog) => ({
+      ...blog,
+      user: responseUser.body.id,
+    }));
+    await Blog.insertMany(listBlogs);
+    const response = await api.post("/api/login").send({ username, password });
+    token = response.body.token;
   });
 
   test("Blogs are returned as json", async () => {
     await api
       .get("/api/blogs")
+      .set("Authorization", `Bearer ${token}`)
       .expect(200)
       .expect("Content-Type", /application\/json/);
   });
 
   test("return all blogs", async () => {
-    const response = await api.get("/api/blogs");
+    const response = await api
+      .get("/api/blogs")
+      .set("Authorization", `Bearer ${token}`);
     assert.strictEqual(response.body.length, helper.initialBlogs.length);
   });
 
   test("return id as property", async () => {
-    const response = await api.get("/api/blogs");
+    const response = await api
+      .get("/api/blogs")
+      .set("Authorization", `Bearer ${token}`);
     expect(response.body[0]).toHaveProperty("id");
   });
 
@@ -39,14 +59,17 @@ describe("When there is initially some blogs saved", () => {
         url: "String",
         likes: 9,
       };
-
+      console.log({ token });
       await api
         .post("/api/blogs")
+        .set("Authorization", `Bearer ${token}`)
         .send(newBlog)
         .expect(201)
         .expect("Content-Type", /application\/json/);
 
-      const response = await api.get("/api/blogs");
+      const response = await api
+        .get("/api/blogs")
+        .set("Authorization", `Bearer ${token}`);
       const authors = response.body.map((r) => r.author);
       assert.strictEqual(response.body.length, helper.initialBlogs.length + 1);
       assert(authors.includes("String"));
@@ -61,6 +84,7 @@ describe("When there is initially some blogs saved", () => {
 
       const response = await api
         .post("/api/blogs")
+        .set("Authorization", `Bearer ${token}`)
         .send(newBlog)
         .expect(201)
         .expect("Content-Type", /application\/json/);
@@ -78,6 +102,7 @@ describe("When there is initially some blogs saved", () => {
 
       await api
         .post("/api/blogs")
+        .set("Authorization", `Bearer ${token}`)
         .send(newBlog)
         .expect(400)
         .expect("Content-Type", /application\/json/);
@@ -93,6 +118,7 @@ describe("When there is initially some blogs saved", () => {
       await api
         .post("/api/blogs")
         .send(newBlog)
+        .set("Authorization", `Bearer ${token}`)
         .expect(400)
         .expect("Content-Type", /application\/json/);
     });
@@ -102,7 +128,10 @@ describe("When there is initially some blogs saved", () => {
     test("succeeds with status code 204 if id is valid", async () => {
       const blogAtStart = await helper.blogsInDB();
       const blogToDelete = blogAtStart[0];
-      await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
+      await api
+        .delete(`/api/blogs/${blogToDelete.id}`)
+        .set("Authorization", `Bearer ${token}`)
+        .expect(204);
 
       const blogsAtEnd = await helper.blogsInDB();
       assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length - 1);
@@ -119,6 +148,7 @@ describe("When there is initially some blogs saved", () => {
       blogToUpdate.likes += 1;
       await api
         .put(`/api/blogs/${blogToUpdate.id}`)
+        .set("Authorization", `Bearer ${token}`)
         .send(blogToUpdate)
         .expect(200);
 
