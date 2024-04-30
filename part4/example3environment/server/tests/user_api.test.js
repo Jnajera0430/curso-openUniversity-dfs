@@ -1,5 +1,4 @@
 const assert = require("node:assert");
-const { after } = require("node:test");
 const bcrypt = require("bcrypt");
 const mongoose = require("mongoose");
 const User = require("../src/models/user");
@@ -63,6 +62,6 @@ describe("when there is initially one user in db", () => {
   });
 });
 
-after(async () => {
+afterAll(async () => {
   await mongoose.connection.close();
 });

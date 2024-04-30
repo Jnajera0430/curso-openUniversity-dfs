@@ -1,4 +1,3 @@
-const { after } = require("node:test");
 const assert = require("node:assert");
 const mongoose = require("mongoose");
 const supertest = require("supertest");
@@ -126,6 +125,6 @@ describe("when there is initially some notes saved", () => {
     });
   });
 });
-after(async () => {
+afterAll(async () => {
   await mongoose.connection.close();
 });
