@@ -1,0 +1,9 @@
+POST http://localhost:3001/api/notes
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjY2MjgzNDRlODcwZWI3MGZkZDRhYWEyMCIsImlhdCI6MTcxMzk5ODU2NH0.dqa6dI5gH8cF5ji_SZkIrtvgZwg6-npOf_mRa32TmU4
+
+{
+  "content": "VS code client is a pretty handy tool",
+  "important": true,
+  "userId": "6628344e870eb70fdd4aaa20"
+}
