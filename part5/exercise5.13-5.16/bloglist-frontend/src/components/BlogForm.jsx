@@ -29,21 +29,34 @@ export const BlogForm = ({ addBlog }) => {
     <form onSubmit={handleAddBlog}>
       <div>
         <label htmlFor="">title:</label>
-        <input value={newBlog.title} name="title" onChange={handleBlogChange} />
+        <input
+          value={newBlog.title}
+          name="title"
+          id="title"
+          onChange={handleBlogChange}
+        />
       </div>
       <div>
         <label htmlFor="">author:</label>
         <input
           value={newBlog.author}
           name="author"
+          id="author"
           onChange={handleBlogChange}
         />
       </div>
       <div>
         <label htmlFor="">url:</label>
-        <input value={newBlog.url} name="url" onChange={handleBlogChange} />
+        <input
+          value={newBlog.url}
+          name="url"
+          id="url"
+          onChange={handleBlogChange}
+        />
       </div>
-      <button type="submit">create</button>
+      <button type="submit" id="button-create">
+        create
+      </button>
     </form>
   );
 };

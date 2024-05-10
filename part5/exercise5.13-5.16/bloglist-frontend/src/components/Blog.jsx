@@ -38,21 +38,24 @@ const Blog = ({ blog, updateBlog, deleteBlog }) => {
       deleteBlog(blog.id);
     }
   };
-
+  const showWhenVisible = { display: isView ? "" : "none" };
   return (
     <div className="cardBlog">
       {blog.title} {blog.author}{" "}
-      <button onClick={handleViewBlog}>{isView ? "hide" : "view"}</button>
-      {isView && (
-        <>
-          <div>{blog.url}</div>
-          <div>
-            Likes {blog.likes} <button onClick={handleAddLike}>like</button>
-          </div>
-          <div>{blog.user.name}</div>
-          <button onClick={handleDeleteBlog}>remove</button>
-        </>
-      )}
+      <button onClick={handleViewBlog} id="button-view-blog">
+        {isView ? "hide" : "view"}
+      </button>
+      <div style={showWhenVisible}>
+        <div>{blog.url}</div>
+        <div>
+          Likes {blog.likes}{" "}
+          <button id="button-blog-likes" onClick={handleAddLike}>
+            like
+          </button>
+        </div>
+        <div>{blog.user.name}</div>
+        <button onClick={handleDeleteBlog}>remove</button>
+      </div>
     </div>
   );
 };
