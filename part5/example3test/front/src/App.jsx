@@ -7,11 +7,12 @@ import Notification from "./components/Notification";
 import Footer from "./components/Footer";
 import { NoteForm } from "./components/NoteForm";
 import { LoginForm } from "./components/LoginForm";
-import Togglable from "./components/Toggable";
+import Togglable from "./components/Togglable";
 const App = () => {
   const [notes, setNotes] = useState([]);
   const [showAll, setShowAll] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [typeMessage, setTypeMessage] = useState("error");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
@@ -22,6 +23,12 @@ const App = () => {
     noteFormRef.current.toggleVisibility();
     noteServices.create(noteObject).then((noteCreated) => {
       setNotes(notes.concat(noteCreated));
+      setTypeMessage("success");
+      setErrorMessage(`a note created by ${noteCreated.author}`);
+      setTimeout(() => {
+        setErrorMessage(null);
+        setTypeMessage("error");
+      }, 5000);
     });
   };
 
@@ -85,9 +92,9 @@ const App = () => {
   return (
     <div>
       <h1>Notes</h1>
-      <Notification message={errorMessage} />
+      <Notification message={errorMessage} type={typeMessage} />
       {user === null ? (
-        <Togglable buttonLabel="login">
+        <Togglable buttonLabel="log in">
           <LoginForm
             username={username}
             password={password}
@@ -98,7 +105,7 @@ const App = () => {
         </Togglable>
       ) : (
         <div>
-          <p>{user.name} logged-in</p>
+          <p>{user.name} logged in</p>
           {
             <Togglable buttonLabel="new note" ref={noteFormRef}>
               <NoteForm createNote={addNote} />

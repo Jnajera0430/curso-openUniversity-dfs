@@ -23,6 +23,7 @@ export const LoginForm = ({
           type="text"
           value={username}
           name="Username"
+          data-testid="username"
           onChange={(e) => handleUsernameChange(e.target.value)}
         />
       </div>
@@ -32,6 +33,7 @@ export const LoginForm = ({
           type="password"
           value={password}
           name="Password"
+          data-testid="password"
           onChange={(e) => handlePasswordChange(e.target.value)}
         />
       </div>

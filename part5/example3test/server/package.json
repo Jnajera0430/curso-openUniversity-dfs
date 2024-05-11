@@ -9,7 +9,8 @@
     "test": "cross-env NODE_ENV=test jest --verbose",
     "lint": "eslint .",
     "build:ui": "xcopy /s /e /y dist ..\\front && cd ../front && npm run build && xcopy /s /e /y dist ..\\server",
-    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push"
+    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push",
+    "start:test": "cross-env NODE_ENV=test node ./src/index.js"
   },
   "keywords": [],
   "author": "",
