@@ -3,7 +3,7 @@ const { loginWith, createNote } = require("./helper");
 
 describe("Note app", () => {
   beforeEach(async ({ page, request }) => {
-    await request.post("/api/tests/reset");
+    await request.post("/api/testing/reset");
     await request.post("/api/users", {
       data: {
         name: "Superuser",

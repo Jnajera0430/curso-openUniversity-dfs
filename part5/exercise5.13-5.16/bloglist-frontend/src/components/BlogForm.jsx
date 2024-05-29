@@ -32,6 +32,7 @@ export const BlogForm = ({ addBlog }) => {
         <input
           value={newBlog.title}
           name="title"
+          data-testid="titleTest"
           id="title"
           onChange={handleBlogChange}
         />
@@ -41,6 +42,7 @@ export const BlogForm = ({ addBlog }) => {
         <input
           value={newBlog.author}
           name="author"
+          data-testid="authorTest"
           id="author"
           onChange={handleBlogChange}
         />
@@ -50,6 +52,7 @@ export const BlogForm = ({ addBlog }) => {
         <input
           value={newBlog.url}
           name="url"
+          data-testid="urlTest"
           id="url"
           onChange={handleBlogChange}
         />

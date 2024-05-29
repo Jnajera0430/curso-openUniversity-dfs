@@ -37,6 +37,11 @@ const App = () => {
         setBlogs(
           blogs.map((blog) => (blog.id === updatedBlog.id ? updatedBlog : blog))
         );
+        setTypeMessage("success");
+        setMessage(`You liked the blog such as ${updatedBlog.title}`);
+        setTimeout(() => {
+          setMessage(null);
+        }, 5000);
       })
       .catch((exception) => {
         setTypeMessage("error");
@@ -50,7 +55,14 @@ const App = () => {
   const deleteBlog = (id) => {
     blogService
       .deleteOne(id)
-      .then(() => setBlogs(blogs.filter((blog) => blog.id !== id)))
+      .then(() => {
+        setBlogs(blogs.filter((blog) => blog.id !== id));
+        setTypeMessage("success");
+        setMessage("Blog has been deleted");
+        setTimeout(() => {
+          setMessage(null);
+        }, 5000);
+      })
       .catch((exception) => {
         setTypeMessage("error");
         setMessage("An error occurred while trying to delete data");
