@@ -16,6 +16,7 @@ const Anecdote = ({ anecdote, vote }) => {
 };
 export const AnecdoteList = () => {
   const dispatch = useDispatch();
+
   const anecdotes = useSelector((state) => {
     if (state.filter) {
       return state.anecdotes.filter((anecdote) =>
@@ -24,6 +25,7 @@ export const AnecdoteList = () => {
     }
     return state.anecdotes;
   });
+
   const vote = async (anecdote) => {
     dispatch(handleAddVote(anecdote));
     dispatch(setNotification(`you voted '${anecdote.content}'`, 3));
