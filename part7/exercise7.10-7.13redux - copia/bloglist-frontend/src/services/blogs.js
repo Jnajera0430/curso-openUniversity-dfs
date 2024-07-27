@@ -6,7 +6,6 @@ let token = null;
 const setToken = (newToken) => {
   token = `Bearer ${newToken}`;
 };
-
 const getAll = () => {
   const config = {
     headers: { Authorization: token },

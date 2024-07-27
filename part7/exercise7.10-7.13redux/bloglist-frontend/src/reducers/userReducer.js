@@ -1,57 +1,25 @@
 import { createSlice } from "@reduxjs/toolkit";
-import loginServices from "../services/login";
-import blogServices from "../services/blogs";
-import { setNotification } from "./notificationReducer";
+import userServices from "../services/users";
 
-const userLoggedSlice = createSlice({
-  name: "userLogged",
-  initialState: null,
+const userSlice = createSlice({
+  name: "users",
+  initialState: [],
   reducers: {
-    setUser(state, action) {
-      state = action.payload;
-      return state;
+    setUsers(state, action) {
+      return (state = action.payload);
+    },
+    append(state, action) {
+      return state.concat(action.payload);
     },
   },
 });
 
-export const { setUser } = userLoggedSlice.actions;
+const { setUsers } = userSlice.actions;
 
-export const logginUser = (content) => {
+export const initialUsers = () => {
   return async (dispatch) => {
-    try {
-      const userLogged = await loginServices.login(content);
-      blogServices.setToken(userLogged.token);
-      window.localStorage.setItem(
-        "loggedBlogappUser",
-        JSON.stringify(userLogged)
-      );
-      dispatch(setUser(userLogged));
-      dispatch(
-        setNotification({
-          message: "User logged in",
-          type: "success",
-        })
-      );
-    } catch (error) {
-      dispatch(
-        setNotification({
-          message: "Wrong username or password",
-          type: "error",
-        })
-      );
-    }
+    const users = await userServices.getAll();
+    dispatch(setUsers(users));
   };
 };
-
-export const setUserLogged = () => {
-  return async (dispatch) => {
-    const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON);
-      dispatch(setUser(user));
-      blogServices.setToken(user.token);
-    }
-  };
-};
-
-export default userLoggedSlice.reducer;
+export default userSlice.reducer;
