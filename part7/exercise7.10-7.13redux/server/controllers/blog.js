@@ -1,6 +1,7 @@
 const blogsRouter = require("express").Router();
 const middleware = require("../utils/middleware");
 const Blog = require("../models/blog");
+const Comment = require("../models/comment");
 
 blogsRouter.get(
   "/",
@@ -9,10 +10,30 @@ blogsRouter.get(
     const blogs = await Blog.find({}).populate("user", {
       username: 1,
       name: 1,
+    }).populate("comments", {
+      description: 1
     });
     return response.json(blogs);
   }
 );
+
+blogsRouter.post("/:id/comments", [middleware.tokenExtractor, middleware.userExtractor], async (request, response) => {
+  const blogID = request.params.id;
+  const body = request.body;
+
+  const blogToUpdate = await Blog.findById(blogID);
+  console.log({ blogToUpdate });
+  const comment = new Comment({
+    description: body.description,
+    idBlog: blogID
+  });
+
+  const commentCreated = await comment.save();
+  blogToUpdate.comments = blogToUpdate.comments.concat(commentCreated.id);
+  blogToUpdate.save()
+  console.log("listo");
+  return response.status(201).json(commentCreated);
+});
 
 blogsRouter.post(
   "/",
@@ -84,5 +105,7 @@ blogsRouter.put(
     return response.json(updatedBlog);
   }
 );
+
+
 
 module.exports = blogsRouter;

@@ -42,6 +42,15 @@ const deleteOne = async (idBlog) => {
   return request.data;
 };
 
-const blogServices = { getAll, create, setToken, update, deleteOne };
+const addComment = async (idBlog, comment) => {
+  const config = {
+    headers: { Authorization: token },
+  };
+
+  const request = await axios.post(`${baseUrl}/${idBlog}/comments`, { description: comment }, config);
+  return request.data;
+}
+
+const blogServices = { getAll, create, setToken, update, deleteOne, addComment };
 
 export default blogServices;

@@ -16,7 +16,10 @@ mongoose.set("strictQuery", false);
 logger.info("connecting to", config.MONGODB_URI);
 
 mongoose
-  .connect(config.MONGODB_URI)
+  .connect(config.MONGODB_URI, {
+    serverSelectionTimeoutMS: 5000,
+    socketTimeoutMS: 45000,
+  })
   .then(() => {
     logger.info("connected to MongoDB");
   })

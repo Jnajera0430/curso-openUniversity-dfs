@@ -30,10 +30,23 @@ const blogSlice = createSlice({
 
       return state.filter((blog) => blog.id !== id);
     },
+    addComment(state, action) {
+      const idBlog = action.payload.idBlog;
+      const comment = action.payload.comment;
+      const blogToEdit = state.find((blog) => blog.id === idBlog);
+      const changedBlog = {
+        ...blogToEdit,
+      };
+      changedBlog.comments = changedBlog.comments.concat(comment);
+
+      return state.map((blog) =>
+        blog.id === blogToEdit.id ? changedBlog : blog
+      );
+    }
   },
 });
 
-export const { appendBlog, setBlogs, editBlog, deleteBlog } = blogSlice.actions;
+export const { appendBlog, setBlogs, editBlog, deleteBlog, addComment } = blogSlice.actions;
 
 export const initialzeBlogs = () => {
   return async (dispatch) => {
@@ -107,5 +120,30 @@ export const removeBlog = (id) => {
     }
   };
 };
+
+export const addCommentForBlog = (idBlog, comment) => {
+  return async (dispatch) => {
+    try {
+      const commentCreated = await blogServices.addComment(idBlog, comment);
+      dispatch(addComment({
+        idBlog,
+        comment: commentCreated
+      }));
+      dispatch(
+        setNotification({
+          message: "Added comment",
+          type: "success",
+        })
+      );
+    } catch (error) {
+      dispatch(
+        setNotification({
+          message: "An error occurred while adding the comment",
+          type: "error",
+        })
+      );
+    }
+  }
+}
 
 export default blogSlice.reducer;

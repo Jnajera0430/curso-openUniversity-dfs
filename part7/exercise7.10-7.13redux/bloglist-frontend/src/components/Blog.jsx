@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { removeBlog, updateBlog } from "../reducers/blogReducer";
+import { addCommentForBlog, initialzeBlogs, removeBlog, updateBlog } from "../reducers/blogReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { useMatch } from "react-router-dom";
 
@@ -22,7 +22,7 @@ const Blog = () => {
   // updateBlog: PropTypes.func.isRequired,
   // deleteBlog: PropTypes.func.isRequired,
   // };
-
+  const [comment, setComment] = useState("");
   const dispatch = useDispatch();
   const blogs = useSelector((state) => state.blogs);
   const handleAddLike = () => {
@@ -41,13 +41,19 @@ const Blog = () => {
       dispatch(removeBlog(blog.id));
     }
   };
+
+  const handleSubmitAddComments = (e) => {
+    e.preventDefault();
+    dispatch(addCommentForBlog(blog.id, comment));
+    setComment("");
+  };
+
   const match = useMatch("/blogs/:id");
   const blog = blogs.find((blog) => blog.id === match.params.id);
 
   if (!blog) {
     return null;
   }
-
   return (
     <div>
       <h2>{blog.title}</h2>
@@ -65,12 +71,18 @@ const Blog = () => {
       <div>added by {blog.author}</div>
       {/* <button onClick={handleDeleteBlog}>remove</button> */}
       <h3>comments</h3>
-      <form>
-        <input type="text" /> <button>add comment</button>
+      <form onSubmit={handleSubmitAddComments}>
+        <input type="text" value={comment} onChange={(e) => {
+          const newComment = e.target.value;
+          setComment(newComment);
+        }} /> <button>add comment</button>
       </form>
       <ul>
-        <li>comment 1</li>
-        <li>comment 2</li>
+        {
+          blog.comments.map((comment) => (
+            <li key={comment.id}>{comment.description}</li>
+          ))
+        }
       </ul>
     </div>
   );
