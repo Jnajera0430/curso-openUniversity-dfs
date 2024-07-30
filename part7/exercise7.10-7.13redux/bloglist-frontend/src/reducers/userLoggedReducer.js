@@ -3,10 +3,12 @@ import loginServices from "../services/login";
 import blogServices from "../services/blogs";
 import userServices from "../services/users";
 import { setNotification } from "./notificationReducer";
+const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
+const user = JSON.parse(loggedUserJSON);
 
 const userLoggedSlice = createSlice({
   name: "userLogged",
-  initialState: null,
+  initialState: user ? user : null,
   reducers: {
     setUser(state, action) {
       state = action.payload;

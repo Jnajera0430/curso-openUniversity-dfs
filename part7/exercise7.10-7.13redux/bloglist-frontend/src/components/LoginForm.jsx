@@ -2,6 +2,7 @@ import PropTypes from "prop-types";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { logginUser } from "../reducers/userLoggedReducer";
+import { Box, Button, TextField } from "@mui/material";
 const LoginForm = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -26,28 +27,37 @@ const LoginForm = () => {
   //   setPassword: PropTypes.func.isRequired,
   // };
   return (
-    <form onSubmit={handleLogin}>
-      <div>
-        username
-        <input
+    <form
+      onSubmit={handleLogin}
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 6,
+      }}
+    >
+      <Box>
+        <TextField
+          label="username"
           type="text"
           value={username}
           name="Username"
           data-testid="username"
           onChange={({ target }) => setUsername(target.value)}
         />
-      </div>
-      <div>
-        password
-        <input
+      </Box>
+      <Box>
+        <TextField
+          label="password"
           type="password"
           value={password}
           name="Password"
           data-testid="password"
           onChange={({ target }) => setPassword(target.value)}
         />
-      </div>
-      <button type="submit">login</button>
+      </Box>
+      <Button type="submit" color="primary">
+        login
+      </Button>
     </form>
   );
 };

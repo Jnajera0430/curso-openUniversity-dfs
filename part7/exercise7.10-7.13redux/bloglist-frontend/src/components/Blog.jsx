@@ -1,8 +1,21 @@
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { addCommentForBlog, initialzeBlogs, removeBlog, updateBlog } from "../reducers/blogReducer";
+import {
+  addCommentForBlog,
+  initialzeBlogs,
+  removeBlog,
+  updateBlog,
+} from "../reducers/blogReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { useMatch } from "react-router-dom";
+import {
+  Box,
+  Button,
+  List,
+  ListItem,
+  ListItemText,
+  TextField,
+} from "@mui/material";
 
 const Blog = () => {
   // const blogPropTypes = {
@@ -55,36 +68,62 @@ const Blog = () => {
     return null;
   }
   return (
-    <div>
+    <Box>
       <h2>{blog.title}</h2>
-      <div>
-        <a href={blog.url} target="_blank" rel="noreferrer">
+      <Box>
+        <a
+          href={blog.url}
+          target="_blank"
+          rel="noreferrer"
+          style={{
+            listStyle: "none",
+            textDecoration: "none",
+          }}
+        >
           {blog.url}
         </a>
-      </div>
-      <div>
+      </Box>
+      <Box>
         {blog.likes} Likes
-        <button id="button-blog-likes" onClick={handleAddLike}>
+        <Button id="button-blog-likes" onClick={handleAddLike}>
           like
-        </button>
-      </div>
-      <div>added by {blog.author}</div>
+        </Button>
+      </Box>
+      <Box>
+        {" "}
+        <p style={{ color: "#19a4e6" }}>added by {blog.author}</p>
+      </Box>
       {/* <button onClick={handleDeleteBlog}>remove</button> */}
       <h3>comments</h3>
-      <form onSubmit={handleSubmitAddComments}>
-        <input type="text" value={comment} onChange={(e) => {
-          const newComment = e.target.value;
-          setComment(newComment);
-        }} /> <button>add comment</button>
+      <form
+        onSubmit={handleSubmitAddComments}
+        style={{
+          display: "flex",
+          gap: 2,
+          alignItems: "center",
+        }}
+      >
+        <TextField
+          label="comment:"
+          variant="filled"
+          data-testid="authorTest"
+          type="text"
+          value={comment}
+          onChange={(e) => {
+            const newComment = e.target.value;
+            setComment(newComment);
+          }}
+        />
+        <Button>add comment</Button>
       </form>
-      <ul>
-        {
-          blog.comments.map((comment) => (
-            <li key={comment.id}>{comment.description}</li>
-          ))
-        }
-      </ul>
-    </div>
+      <List>
+        {blog.comments.map((comment) => (
+          <ListItem key={comment.id}>
+            <ListItemText>{comment.description}</ListItemText>
+          </ListItem>
+        ))}
+      </List>
+    </Box>
   );
 };
 
