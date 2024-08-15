@@ -1,20 +1,16 @@
 const mongoose = require("mongoose");
 
 const schema = new mongoose.Schema({
-  title: {
+  name: {
     type: String,
     required: true,
     unique: true,
-    minlength: 2,
+    minlength: 4,
   },
-  published: {
-    type: Number,
+  born: {
+    type: Number || null,
+    dafault: null,
   },
-  author: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Author",
-  },
-  genres: [{ type: String }],
 });
 
 schema.set("toJSON", {
@@ -26,7 +22,6 @@ schema.set("toJSON", {
     return ret;
   },
 });
+const Author = mongoose.model("Author", schema);
 
-const Book = mongoose.model("Book", schema);
-
-module.exports = Book;
+module.exports = Author;

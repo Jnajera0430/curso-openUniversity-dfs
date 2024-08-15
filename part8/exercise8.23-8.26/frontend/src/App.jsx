@@ -2,13 +2,30 @@ import { useState } from "react";
 import Authors from "./components/Authors";
 import Books from "./components/Books";
 import BookForm from "./components/BookForm";
-import { useApolloClient } from "@apollo/client";
+import { useApolloClient, useSubscription } from "@apollo/client";
 import Notify from "./components/Notify";
 import LoginForm from "./components/LoginForm";
 import Recommend from "./components/Recommend";
+import { ALL_BOOKS, BOOK_ADDED } from "./queries";
 
 const tokenSesion = localStorage.getItem("phonenumbers-user-token");
+// eslint-disable-next-line react-refresh/only-export-components
+export const updateCache = (cache, query, addedBook) => {
+  // helper that is used to eliminate saving same person twice
+  const uniqByName = (a) => {
+    let seen = new Set();
+    return a.filter((item) => {
+      let k = item.name;
+      return seen.has(k) ? false : seen.add(k);
+    });
+  };
 
+  cache.updateQuery(query, ({ allBooks }) => {
+    return {
+      allBooks: uniqByName(allBooks.concat(addedBook)),
+    };
+  });
+};
 function App() {
   const [view, setView] = useState("authors");
   const [token, setToken] = useState(tokenSesion ? tokenSesion : null);
@@ -27,6 +44,20 @@ function App() {
     localStorage.clear();
     client.resetStore();
   };
+
+  useSubscription(BOOK_ADDED, {
+    onData: ({ data }) => {
+      const addedPerson = data.data.personAdded;
+      notify(`${addedPerson.name} added`);
+      // client.cache.updateQuery({ query: ALL_PERSONS }, ({ allPersons }) => {
+      //   return {
+      //     allPersons: allPersons.concat(addedPerson),
+      //   }
+      // })
+      updateCache(client.cache, { query: ALL_BOOKS }, addedPerson);
+      // updateCacheWith(addedPerson);
+    },
+  });
 
   return (
     <div>
