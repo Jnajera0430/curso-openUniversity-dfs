@@ -20,10 +20,17 @@ export const updateCache = (cache, query, addedBook) => {
     });
   };
 
-  cache.updateQuery(query, ({ allBooks }) => {
-    return {
-      allBooks: uniqByName(allBooks.concat(addedBook)),
-    };
+  cache.updateQuery(query, (data) => {
+    if (data) {
+      return {
+        ...data,
+        allBooks: uniqByName(data.allBooks.concat(addedBook)),
+      };
+    } else {
+      return {
+        allBooks: [addedBook],
+      };
+    }
   });
 };
 function App() {
@@ -46,15 +53,12 @@ function App() {
   };
 
   useSubscription(BOOK_ADDED, {
-    onData: ({ data }) => {
-      const addedPerson = data.data.personAdded;
-      notify(`${addedPerson.name} added`);
-      // client.cache.updateQuery({ query: ALL_PERSONS }, ({ allPersons }) => {
-      //   return {
-      //     allPersons: allPersons.concat(addedPerson),
-      //   }
-      // })
-      updateCache(client.cache, { query: ALL_BOOKS }, addedPerson);
+    onData: ({ data, client }) => {
+      const addedBook = data.data.bookAdded;
+      console.log({ addedBook });
+
+      notify(`${addedBook.title} added`);
+      updateCache(client.cache, { query: ALL_BOOKS }, addedBook);
       // updateCacheWith(addedPerson);
     },
   });

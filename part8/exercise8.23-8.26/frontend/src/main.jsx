@@ -44,7 +44,20 @@ const splitLink = split(
 );
 
 const client = new ApolloClient({
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({
+    typePolicies: {
+      Query: {
+        fields: {
+          allBooks: {
+            keyArgs: false,
+            merge(existing = [], incoming) {
+              return [...existing, ...incoming];
+            },
+          },
+        },
+      },
+    },
+  }),
   link: splitLink,
 });
 ReactDOM.createRoot(document.getElementById("root")).render(
