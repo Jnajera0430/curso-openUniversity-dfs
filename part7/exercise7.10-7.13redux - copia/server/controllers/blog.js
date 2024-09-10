@@ -4,7 +4,7 @@ const Blog = require("../models/blog");
 
 blogsRouter.get(
   "/",
-  [middleware.tokenExtractor, middleware.userExtractor],
+  //[middleware.tokenExtractor, middleware.userExtractor],
   async (request, response) => {
     const blogs = await Blog.find({}).populate("user", {
       username: 1,
